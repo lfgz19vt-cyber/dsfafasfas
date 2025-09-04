@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gg/extrnl/METH - Share Programming Methods</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: hsl(240, 10%, 3.9%);
+            --foreground: hsl(0, 0%, 98%);
+            --card: hsl(240, 10%, 7%);
+            --card-foreground: hsl(0, 0%, 98%);
+            --primary: hsl(0, 84%, 60%);
+            --primary-foreground: hsl(0, 0%, 98%);
+            --secondary: hsl(217, 91%, 60%);
+            --secondary-foreground: hsl(0, 0%, 98%);
+            --muted: hsl(240, 3.7%, 15.9%);
+            --muted-foreground: hsl(240, 5%, 64.9%);
+            --accent: hsl(217, 91%, 60%);
+            --accent-foreground: hsl(0, 0%, 98%);
+            --border: hsl(240, 3.7%, 15.9%);
+            --input: hsl(240, 3.7%, 15.9%);
+            --ring: hsl(0, 84%, 60%);
+            --font-sans: "Inter", sans-serif;
+            --radius: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* Snowflake particles canvas */
+        #snowflake-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Glass effect matching your app */
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Button styles matching your app */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)));
+            color: hsl(var(--primary-foreground));
+            padding: 10px 20px;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-secondary {
+            background: hsl(var(--muted));
+            color: hsl(var(--muted-foreground));
+            padding: 8px 16px;
+            border: 1px solid hsl(var(--border));
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: hsl(var(--foreground));
+            padding: 8px 12px;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Input styles matching your app */
+        .input {
+            width: 100%;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--background));
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            color: hsl(var(--foreground));
+            outline: none;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .input:focus {
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+        }
+
+        .input::placeholder {
+            color: hsl(var(--muted-foreground));
+        }
+
+        .textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* Card styles */
+        .card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            color: hsl(var(--card-foreground));
+        }
+
+        /* Badge styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(59, 130, 246, 0.2);
+            color: hsl(var(--accent));
+        }
+
+        .badge-viral {
+            background: linear-gradient(45deg, #f97316, #dc2626);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header matching your app */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid hsl(var(--border));
+            padding: 16px 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Search bar matching your app */
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid hsl(var(--border));
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Navigation matching your app */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: hsl(var(--foreground));
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: hsl(var(--primary));
+        }
+
+        /* Hero section matching your screenshot */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Upload section matching your screenshot exactly */
+        .upload-section {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin: 48px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .upload-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .content-type-section {
+            margin-bottom: 24px;
+        }
+
+        .content-type-label {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .content-types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .content-type-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .content-type-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: hsl(var(--accent));
+        }
+
+        .content-type-option.active {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: hsl(var(--primary));
+        }
+
+        .radio-input {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid hsl(var(--border));
+            position: relative;
+        }
+
+        .radio-input.checked {
+            border-color: hsl(var(--primary));
+        }
+
+        .radio-input.checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: hsl(var(--primary));
+            border-radius: 50%;
+        }
+
+        .option-details h4 {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .option-details p {
+            font-size: 14px;
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Form grid matching your screenshot */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-field {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .recommended-section {
+            margin-top: 8px;
+        }
+
+        .recommended-label {
+            font-size: 12px;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .recommended-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .recommended-badge {
+            background: linear-gradient(45deg, #f97316, #dc2626);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .recommended-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Methods grid (for when we show methods) */
+        .methods-section {
+            margin-top: 48px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .method-card {
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        .method-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .method-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .method-details h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .method-details p {
+            font-size: 14px;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .method-description {
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .method-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .method-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .stat:hover {
+            color: hsl(var(--primary));
+        }
+
+        /* Floating buttons */
+        .floating-buttons {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 40;
+        }
+
+        .floating-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .scroll-top-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .content-types-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Show/hide sections */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Snowflake particles -->
+    <canvas id="snowflake-canvas"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-code"></i>
+                    .gg/extrnl/METH
+                </div>
+                
+                <div class="search-container">
+                    <div style="position: relative;">
+                        <input type="text" class="input search-input" placeholder="Search methods, tutorials, guides..." id="searchInput">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                
+                <nav class="nav">
+                    <a href="#" class="nav-link" onclick="showHome()">Home</a>
+                    <a href="#" class="nav-link" onclick="showExplore()">Explore</a>
+                    <a href="#" class="nav-link" onclick="showPromote()">
+                        <i class="fas fa-trending-up" style="margin-right: 4px;"></i>
+                        Promote
+                    </a>
+                    <a href="#" class="nav-link" onclick="showProfile()">Profile</a>
+                    <a href="#" class="nav-link" onclick="showMemes()">Memes</a>
+                    <button class="btn btn-ghost" onclick="toggleSettings()">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2 class="hero-title">Share Your Methods</h2>
+            <p class="hero-subtitle">
+                Discover and share step-by-step methods, tutorials, and guides with the community
+            </p>
+            <button class="btn btn-primary" onclick="scrollToUpload()">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                Upload Method
+            </button>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <h3>Upload Your Method</h3>
+            
+            <!-- Content Type Selection -->
+            <div class="content-type-section">
+                <label class="content-type-label">What would you like to share?</label>
+                <div class="content-types-grid">
+                    <div class="content-type-option active" onclick="selectContentType('text', this)">
+                        <div class="radio-input checked"></div>
+                        <div class="option-details">
+                            <h4>Text Content</h4>
+                            <p>Share written tutorials, guides, or code snippets</p>
+                        </div>
+                    </div>
+                    <div class="content-type-option" onclick="selectContentType('video', this)">
+                        <div class="radio-input"></div>
+                        <div class="option-details">
+                            <h4>Video Content</h4>
+                            <p>Upload video tutorials or demos</p>
+                        </div>
+                    </div>
+                    <div class="content-type-option" onclick="selectContentType('document', this)">
+                        <div class="radio-input"></div>
+                        <div class="option-details">
+                            <h4>Document</h4>
+                            <p>Share PDFs, docs, or other files</p>
+                        </div>
+                    </div>
+                    <div class="content-type-option" onclick="selectContentType('image', this)">
+                        <div class="radio-input"></div>
+                        <div class="option-details">
+                            <h4>Image Content</h4>
+                            <p>Share screenshots, diagrams, or visual guides</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <form id="uploadForm" onsubmit="handleSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label class="form-label">Method Title</label>
+                        <input type="text" class="input" placeholder="Enter method title" id="methodTitle" required>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="input" placeholder="Type your own category..." id="methodCategory" required>
+                        <div class="recommended-section">
+                            <label class="recommended-label">Recommended:</label>
+                            <div class="recommended-badges">
+                                <span class="recommended-badge" onclick="setCategory('EXTRNLBEAMING')">
+                                    EXTRNLBEAMING ⚡ VIRAL
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">Author Name</label>
+                    <input type="text" class="input" placeholder="Your name" id="authorName" required>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">Description</label>
+                    <textarea class="input textarea" placeholder="Describe your method..." id="methodDescription" rows="4" required></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label">Content</label>
+                    <textarea class="input textarea" placeholder="Write your detailed method content here..." id="methodContent" rows="8" required></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>
+                        Publish Method
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Methods Section -->
+        <section class="methods-section" id="methodsSection">
+            <div class="section-header">
+                <h3 class="section-title" id="sectionTitle">Latest Methods</h3>
+                <div class="sort-controls">
+                    <button class="btn btn-secondary" id="popularBtn" onclick="sortBy('popular')">
+                        <i class="fas fa-fire" style="margin-right: 4px;"></i>
+                        Popular
+                    </button>
+                    <button class="btn btn-primary" id="recentBtn" onclick="sortBy('recent')">
+                        <i class="fas fa-clock" style="margin-right: 4px;"></i>
+                        Recent
+                    </button>
+                </div>
+            </div>
+
+            <div class="methods-grid" id="methodsGrid">
+                <!-- Methods will be added here dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Action Buttons -->
+    <div class="floating-buttons">
+        <button class="floating-btn btn btn-primary scroll-top-hidden" id="scrollTopBtn" onclick="scrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="floating-btn btn btn-secondary" onclick="scrollToUpload()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSort = 'recent';
+        let searchQuery = '';
+        let selectedContentType = 'text';
+        let methods = [
+            {
+                id: 1,
+                title: "Async/Await Best Practices",
+                author: "CodeMaster",
+                category: "JavaScript",
+                description: "Handle asynchronous operations like a pro. Learn error handling, parallel execution, and performance optimization techniques.",
+                content: "Detailed async/await content...",
+                likes: 94,
+                views: 401,
+                date: "2025-01-04"
+            },
+            {
+                id: 2,
+                title: "EXTRNLBEAMING Algorithm",
+                author: "EXTRNL Team", 
+                category: "EXTRNLBEAMING",
+                description: "Revolutionary data processing method that increases efficiency by 300%. Used by top companies worldwide.",
+                content: "EXTRNLBEAMING implementation...",
+                likes: 156,
+                views: 789,
+                date: "2025-01-03"
+            },
+            {
+                id: 3,
+                title: "Custom React Hooks",
+                author: "ReactDev",
+                category: "React", 
+                description: "Build reusable logic with custom hooks. This method shows you how to create hooks that manage state and side effects effectively.",
+                content: "React hooks tutorial...",
+                likes: 67,
+                views: 234,
+                date: "2025-01-02"
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMethods();
+            initSnowflakes();
+            initScrollListener();
+        });
+
+        // Content type selection
+        function selectContentType(type, element) {
+            selectedContentType = type;
+            
+            // Update UI
+            document.querySelectorAll('.content-type-option').forEach(opt => {
+                opt.classList.remove('active');
+                opt.querySelector('.radio-input').classList.remove('checked');
+            });
+            
+            element.classList.add('active');
+            element.querySelector('.radio-input').classList.add('checked');
+        }
+
+        // Set category
+        function setCategory(category) {
+            document.getElementById('methodCategory').value = category;
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const newMethod = {
+                id: methods.length + 1,
+                title: document.getElementById('methodTitle').value,
+                author: document.getElementById('authorName').value,
+                category: document.getElementById('methodCategory').value,
+                description: document.getElementById('methodDescription').value,
+                content: document.getElementById('methodContent').value,
+                likes: 0,
+                views: 0,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            methods.unshift(newMethod);
+            renderMethods();
+            
+            // Reset form
+            document.getElementById('uploadForm').reset();
+            
+            // Show success message
+            alert('Method published successfully!');
+            
+            // Scroll to methods section
+            document.getElementById('methodsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Render methods
+        function renderMethods() {
+            const grid = document.getElementById('methodsGrid');
+            const filteredMethods = filterAndSortMethods();
+            
+            grid.innerHTML = filteredMethods.map(method => `
+                <div class="method-card card glass-effect" data-id="${method.id}">
+                    <div class="method-header">
+                        <div class="method-info">
+                            <div class="method-icon" style="background: ${getMethodGradient(method.category)};">
+                                <i class="${getMethodIcon(method.category)}"></i>
+                            </div>
+                            <div class="method-details">
+                                <h4>${method.title}</h4>
+                                <p>By ${method.author}</p>
+                            </div>
+                        </div>
+                        <span class="badge ${method.category === 'EXTRNLBEAMING' ? 'badge-viral' : ''}">
+                            ${method.category}${method.category === 'EXTRNLBEAMING' ? ' ⚡ VIRAL' : ''}
+                        </span>
+                    </div>
+                    <p class="method-description">${method.description}</p>
+                    <div class="method-footer">
+                        <div class="method-stats">
+                            <span class="stat" onclick="toggleLike(${method.id}, this)">
+                                <i class="far fa-heart"></i>
+                                <span>${method.likes}</span>
+                            </span>
+                            <span class="stat">
+                                <i class="far fa-eye"></i>
+                                <span>${method.views}</span>
+                            </span>
+                        </div>
+                        <button class="btn btn-ghost" onclick="viewMethod(${method.id})">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get method icon
+        function getMethodIcon(category) {
+            const icons = {
+                'EXTRNLBEAMING': 'fas fa-fire',
+                'JavaScript': 'fab fa-js',
+                'React': 'fab fa-react',
+                'Python': 'fab fa-python',
+                'CSS': 'fab fa-css3-alt',
+                'Algorithms': 'fas fa-project-diagram'
+            };
+            return icons[category] || 'fas fa-code';
+        }
+
+        // Get method gradient
+        function getMethodGradient(category) {
+            const gradients = {
+                'EXTRNLBEAMING': 'linear-gradient(45deg, #f97316, #dc2626)',
+                'JavaScript': 'linear-gradient(45deg, #dc2626, #3b82f6)',
+                'React': 'linear-gradient(45deg, #3b82f6, #8b5cf6)',
+                'Python': 'linear-gradient(45deg, #10b981, #3b82f6)',
+                'CSS': 'linear-gradient(45deg, #8b5cf6, #ec4899)',
+                'Algorithms': 'linear-gradient(45deg, #f59e0b, #ef4444)'
+            };
+            return gradients[category] || 'linear-gradient(45deg, #6b7280, #4b5563)';
+        }
+
+        // Filter and sort methods
+        function filterAndSortMethods() {
+            let filtered = methods.filter(method => {
+                if (!searchQuery) return true;
+                const query = searchQuery.toLowerCase();
+                return method.title.toLowerCase().includes(query) ||
+                       method.description.toLowerCase().includes(query) ||
+                       method.category.toLowerCase().includes(query) ||
+                       method.author.toLowerCase().includes(query);
+            });
+
+            filtered.sort((a, b) => {
+                if (currentSort === 'popular') {
+                    return b.likes - a.likes;
+                } else {
+                    return new Date(b.date) - new Date(a.date);
+                }
+            });
+
+            return filtered;
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            document.getElementById('sectionTitle').textContent = 
+                searchQuery ? `Search Results for "${searchQuery}"` : 'Latest Methods';
+            renderMethods();
+        });
+
+        // Sort functionality
+        function sortBy(type) {
+            currentSort = type;
+            document.getElementById('popularBtn').className = type === 'popular' ? 'btn btn-primary' : 'btn btn-secondary';
+            document.getElementById('recentBtn').className = type === 'recent' ? 'btn btn-primary' : 'btn btn-secondary';
+            renderMethods();
+        }
+
+        // Like functionality
+        function toggleLike(methodId, element) {
+            const method = methods.find(m => m.id === methodId);
+            const heartIcon = element.querySelector('i');
+            const likeCount = element.querySelector('span');
+            
+            if (heartIcon.classList.contains('far')) {
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+                heartIcon.style.color = 'hsl(var(--primary))';
+                method.likes++;
+            } else {
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+                heartIcon.style.color = '';
+                method.likes--;
+            }
+            
+            likeCount.textContent = method.likes;
+        }
+
+        // View method
+        function viewMethod(methodId) {
+            const method = methods.find(m => m.id === methodId);
+            method.views++;
+            alert(`Opening: ${method.title}\n\n${method.content}\n\nViews: ${method.views}`);
+            renderMethods();
+        }
+
+        // Navigation functions
+        function showHome() { window.location.reload(); }
+        function showExplore() { alert('Explore page would show filtered methods!'); }
+        function showPromote() { alert('Promote page would show promotion tools!'); }
+        function showProfile() { alert('Profile page would show user profile!'); }
+        function showMemes() { alert('Memes page would show programming memes!'); }
+        function toggleSettings() { alert('Settings panel would open with theme controls!'); }
+
+        // Scroll functions
+        function scrollToUpload() {
+            document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Scroll listener for floating button
+        function initScrollListener() {
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.remove('scroll-top-hidden');
+                } else {
+                    scrollTopBtn.classList.add('scroll-top-hidden');
+                }
+            });
+        }
+
+        // Snowflake animation
+        function initSnowflakes() {
+            const canvas = document.getElementById('snowflake-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            const snowflakes = [];
+            
+            function createSnowflake() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: -10,
+                    radius: Math.random() * 3 + 1,
+                    speed: Math.random() * 2 + 1,
+                    opacity: Math.random() * 0.6 + 0.4
+                };
+            }
+            
+            function updateSnowflakes() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Add new snowflakes
+                if (Math.random() < 0.3) {
+                    snowflakes.push(createSnowflake());
+                }
+                
+                // Update and draw snowflakes
+                for (let i = snowflakes.length - 1; i >= 0; i--) {
+                    const flake = snowflakes[i];
+                    flake.y += flake.speed;
+                    flake.x += Math.sin(flake.y * 0.01) * 0.5;
+                    
+                    ctx.save();
+                    ctx.globalAlpha = flake.opacity;
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.beginPath();
+                    ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                    
+                    // Remove snowflakes that have fallen off screen
+                    if (flake.y > canvas.height) {
+                        snowflakes.splice(i, 1);
+                    }
+                }
+                
+                requestAnimationFrame(updateSnowflakes);
+            }
+            
+            updateSnowflakes();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+        });
+    </script>
+</body>
+</html>
